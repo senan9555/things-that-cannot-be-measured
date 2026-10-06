@@ -388,7 +388,7 @@ async function changeChapter(text) {
 
 
 /* =========================
-   INTERACTIVE STEPS
+   INTERACTIVE PHASE
 ========================= */
 
 async function nextStep() {
@@ -399,12 +399,12 @@ async function nextStep() {
 
   step++;
 
-  /*
-   * First 5 transitions:
-   * Tap to continue remains visible.
-   */
 
-  if (step < interactiveSteps.length) {
+  /* -------------------------
+     NORMAL INTERACTIVE STEPS
+  ------------------------- */
+
+  if (step < interactiveSteps.length - 1) {
 
     const current = interactiveSteps[step];
 
@@ -413,21 +413,7 @@ async function nextStep() {
       changeText(mainText, current.text)
     ]);
 
-    /*
-     * The sixth and final interactive text
-     * is now on screen.
-     *
-     * After it appears, hide the instruction.
-     */
-
-    if (step === interactiveSteps.length - 1) {
-
-      await sleep(700);
-
-      tapHint.classList.add("hidden");
-
-      await sleep(700);
-    }
+    await sleep(500);
 
     busy = false;
 
@@ -435,13 +421,44 @@ async function nextStep() {
   }
 
 
-  /*
-   * Start automatic phase.
-   */
+  /* -------------------------
+     LAST INTERACTIVE STEP
+  ------------------------- */
 
-  automaticStarted = true;
+  if (step === interactiveSteps.length - 1) {
 
-  await startAutomaticSequence();
+    const current = interactiveSteps[step];
+
+    await Promise.all([
+      changeChapter(current.chapter),
+      changeText(mainText, current.text)
+    ]);
+
+
+    /* Hide Tap to continue */
+
+    tapHint.classList.add("hidden");
+
+
+    /*
+      Give the final interactive sentence
+      some breathing room before the
+      automatic sequence begins.
+    */
+
+    await sleep(4500);
+
+
+    /* Start automatically */
+
+    automaticStarted = true;
+
+    busy = false;
+
+    await startAutomaticSequence();
+
+    return;
+  }
 }
 
 
@@ -451,16 +468,33 @@ async function nextStep() {
 
 async function startAutomaticSequence() {
 
-  await sleep(1000);
+  /*
+    Small pause before the first
+    automatic sentence.
+  */
+
+  await sleep(400);
+
 
   for (let i = 0; i < automaticSteps.length; i++) {
 
     const current = automaticSteps[i];
 
+
+    /*
+      Change both chapter and main text.
+    */
+
     await Promise.all([
       changeChapter(current.chapter),
       changeText(mainText, current.text)
     ]);
+
+
+    /*
+      Wait the exact amount of time
+      assigned to this sentence.
+    */
 
     if (current.final) {
 
@@ -469,19 +503,22 @@ async function startAutomaticSequence() {
       break;
     }
 
+
     await sleep(current.delay);
   }
 }
 
 
 /* =========================
-   START
+   INITIAL STATE
 ========================= */
 
 chapter.textContent = interactiveSteps[0].chapter;
 mainText.textContent = interactiveSteps[0].text;
 
 
-/* Tap anywhere */
+/* =========================
+   TAP ANYWHERE
+========================= */
 
 screen.addEventListener("click", nextStep);
