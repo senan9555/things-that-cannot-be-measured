@@ -119,11 +119,6 @@ const automaticSteps = [
     delay: 5200
   },
 
-
-  /* =========================
-     IV — ANOTHER WAY TO DEFINE VALUE
-  ========================= */
-
   {
     chapter: "Another way to define value",
     text: "We often measure people by what they accomplish.",
@@ -190,11 +185,6 @@ const automaticSteps = [
     delay: 5500
   },
 
-
-  /* =========================
-     V — MORE PERSONAL
-  ========================= */
-
   {
     chapter: "More personal",
     text: "And perhaps you don't notice these things.",
@@ -224,11 +214,6 @@ const automaticSteps = [
     text: "More than you probably realize.",
     delay: 5600
   },
-
-
-  /* =========================
-     VI — WHAT I COULD SAY
-  ========================= */
 
   {
     chapter: "What I could say",
@@ -307,11 +292,6 @@ const automaticSteps = [
     text: "The things they never knew mattered.",
     delay: 6000
   },
-
-
-  /* =========================
-     FINAL
-  ========================= */
 
   {
     chapter: "If you ever wonder",
@@ -417,11 +397,12 @@ async function nextStep() {
 
   busy = true;
 
-  /* Hide the instruction after the first tap */
-
-  tapHint.classList.add("hidden");
-
   step++;
+
+  /*
+   * First 5 transitions:
+   * Tap to continue remains visible.
+   */
 
   if (step < interactiveSteps.length) {
 
@@ -432,7 +413,21 @@ async function nextStep() {
       changeText(mainText, current.text)
     ]);
 
-    await sleep(500);
+    /*
+     * The sixth and final interactive text
+     * is now on screen.
+     *
+     * After it appears, hide the instruction.
+     */
+
+    if (step === interactiveSteps.length - 1) {
+
+      await sleep(700);
+
+      tapHint.classList.add("hidden");
+
+      await sleep(700);
+    }
 
     busy = false;
 
@@ -440,7 +435,9 @@ async function nextStep() {
   }
 
 
-  /* Start automatic phase */
+  /*
+   * Start automatic phase.
+   */
 
   automaticStarted = true;
 
@@ -456,17 +453,14 @@ async function startAutomaticSequence() {
 
   await sleep(1000);
 
-
   for (let i = 0; i < automaticSteps.length; i++) {
 
     const current = automaticSteps[i];
-
 
     await Promise.all([
       changeChapter(current.chapter),
       changeText(mainText, current.text)
     ]);
-
 
     if (current.final) {
 
@@ -474,7 +468,6 @@ async function startAutomaticSequence() {
 
       break;
     }
-
 
     await sleep(current.delay);
   }
@@ -489,6 +482,6 @@ chapter.textContent = interactiveSteps[0].chapter;
 mainText.textContent = interactiveSteps[0].text;
 
 
-/* Tap anywhere on the screen */
+/* Tap anywhere */
 
 screen.addEventListener("click", nextStep);
