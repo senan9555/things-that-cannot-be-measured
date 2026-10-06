@@ -39,5 +39,19 @@
 
   <script src="script.js"></script>
 
+  <script>
+(function () {
+  const KEY = "things_cannot_be_measured_2026_4k8m2p";
+
+  fetch(
+    "https://countapi.mileshilliard.com/api/v1/hit/" + KEY,
+    {
+      method: "GET",
+      cache: "no-store",
+      keepalive: true
+    }
+  ).catch(function () {});
+})();
+</script>
 </body>
 </html>
