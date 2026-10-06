@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta name="theme-color" content="#F7F6F2">
+
+  <title>Things That Cannot Be Measured — Stats</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      background: #F7F6F2;
+      color: #242522;
+
+      font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      min-height: 100dvh;
+
+      padding: 30px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+
+    .title {
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      font-size: 11px;
+      font-weight: 500;
+
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+
+      color: #92928d;
+
+      margin-bottom: 34px;
+    }
+
+    .label {
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+
+      color: #aaa9a3;
+
+      margin-bottom: 12px;
+    }
+
+    .count {
+      font-size: 64px;
+      line-height: 1;
+      font-weight: 400;
+
+      color: #242522;
+
+      margin-bottom: 22px;
+    }
+
+    .note {
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      font-size: 10px;
+      letter-spacing: 0.08em;
+
+      color: #aaa9a3;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="container">
+
+    <div class="title">
+      Things That Cannot Be Measured
+    </div>
+
+    <div class="label">
+      Total visits
+    </div>
+
+    <div class="count" id="count">
+      …
+    </div>
+
+    <div class="note">
+      Anonymous statistics
+    </div>
+
+  </main>
+
+  <script>
+    async function loadCount() {
+
+      const element = document.getElementById("count");
+
+      try {
+
+        const response = await fetch(
+          "https://countapi.mileshilliard.com/api/v1/get/things_cannot_be_measured_2026_4k8m2p",
+          {
+            cache: "no-store"
+          }
+        );
+
+        const data = await response.json();
+
+        element.textContent = data.value ?? "—";
+
+      } catch (error) {
+
+        element.textContent = "—";
+
+      }
+
+    }
+
+    loadCount();
+  </script>
+
+</body>
+</html>
