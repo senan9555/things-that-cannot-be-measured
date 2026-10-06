@@ -1,6 +1,7 @@
 const chapter = document.getElementById("chapter");
 const mainText = document.getElementById("mainText");
 const screen = document.getElementById("screen");
+const tapHint = document.getElementById("tapHint");
 
 let step = 0;
 let busy = false;
@@ -390,7 +391,6 @@ async function changeText(element, text) {
 
   element.classList.remove("fade-out");
   element.classList.add("fade-in");
-
 }
 
 
@@ -404,7 +404,6 @@ async function changeChapter(text) {
 
   chapter.classList.remove("fade-out");
   chapter.classList.add("fade-in");
-
 }
 
 
@@ -417,6 +416,10 @@ async function nextStep() {
   if (busy || automaticStarted) return;
 
   busy = true;
+
+  /* Hide the instruction after the first tap */
+
+  tapHint.classList.add("hidden");
 
   step++;
 
@@ -442,7 +445,6 @@ async function nextStep() {
   automaticStarted = true;
 
   await startAutomaticSequence();
-
 }
 
 
@@ -452,9 +454,7 @@ async function nextStep() {
 
 async function startAutomaticSequence() {
 
-  screen.classList.add("automatic");
-
-  await sleep(1200);
+  await sleep(1000);
 
 
   for (let i = 0; i < automaticSteps.length; i++) {
@@ -473,14 +473,11 @@ async function startAutomaticSequence() {
       await sleep(current.delay);
 
       break;
-
     }
 
 
     await sleep(current.delay);
-
   }
-
 }
 
 
@@ -492,6 +489,6 @@ chapter.textContent = interactiveSteps[0].chapter;
 mainText.textContent = interactiveSteps[0].text;
 
 
-/* Tap anywhere */
+/* Tap anywhere on the screen */
 
 screen.addEventListener("click", nextStep);
